@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Oráculo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Old+English+Text+MT&display=swap');
+
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: 'Old English Text MT', cursive;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-family: 'Old English Text MT', cursive;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        form {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
+            text-align: left;
+            width: 500px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, select, button {
+            width: 98%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+
+        input, select {
+            background-color: #333;
+            color: white;
+        }
+        input[type="text"], input[type="number"] {
+            width: 95%;  
+            max-width: 500px;  
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        select {
+            width: 98%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        button {
+            background-color: #5a5a5a;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #F1A7D1;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .resultado {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>El Oráculo</h1>
+
+    <form method="POST">
+       <label for="accion">¿Qué deseas hacer?</label><br>
+        <input type="radio" id="cifrar" name="accion" value="cifrar" checked> Cifrar
+        <input type="radio" id="descifrar" name="accion" value="descifrar"> Descifrar<br><br>
+
+        <label for="texto">Texto:</label>
+        <input type="text" name="texto" required maxlength="150">
+
+        <label for="metodo">Método:</label>
+        <select name="metodo">
+            <option value="cesar">Cifrado César</option>
+            <option value="base64">Base64</option>
+        </select>
+
+        <label for="desplazamiento">Desplazamiento (solo si es César):</label>
+        <input type="number" name="desplazamiento" min="1" max="25" required>
+
+        <button type="submit">Abrakadabra</button>
+    </form>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if resultado %}
+        <h2>Resultado:</h2>
+        <p class="resultado">{{ resultado }}</p>
+    {% endif %}
+
+</body>
+</html>
