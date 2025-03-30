@@ -23,8 +23,6 @@ def cifrar_base64(texto):
 def decodificar_base64(texto):
     try:
         return base64.b64decode(texto).decode()
-    except Exception:
-        return "Error: No se pudo decodificar el texto en Base64."
 
 @app.route("/", methods=["GET", "POST"])
 def index():
