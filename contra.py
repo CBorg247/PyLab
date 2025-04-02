@@ -20,7 +20,7 @@ def verificar_seguridad(contraseña):
     # 2. Verificar si la contraseña es "Fácil"
     # Contraseñas fáciles: solo números, solo letras, solo minúsculas, etc.
     if (any(c.isdigit() for c in contraseña) and len(contraseña) < 8):
-        return "Fácil. Agregue más caracteres", "fácil"
+        return "Fácil. Agregue más variables", "fácil"
     
     # 3. Verificar si la contraseña es "Moderada"
     # Contraseñas moderadas: contiene al menos un número, una mayúscula y una minúscula, pero no tiene caracteres especiales
@@ -41,7 +41,7 @@ def verificar_seguridad(contraseña):
         return "Difícil. Muy segura", "difícil"
     
     # Si no cumple con ninguna de las anteriores, es "Fácil"
-    return "Fácil. Agregue más caracteres", "fácil"
+    return "No cumple todos los requisitos", "fácil"
 
 def hashear_contraseña(contraseña):
     if contraseña == None:
