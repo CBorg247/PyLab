@@ -4,31 +4,63 @@
   <meta charset="UTF-8">
   <title>Conexión BLE Web</title>
   <style>
-    body { font-family: Arial; padding: 20px; }
-    button { margin: 10px; }
-    ul { list-style: none; padding: 0; }
-    li { margin: 8px 0; }
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      padding: 20px;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 6px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+      background-color: #111;
+      padding: 10px;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
-  <h2>Escáner Bluetooth BLE</h2>
+  <h2>🔧 Escáner Bluetooth BLE</h2>
   <button onclick="scan()">🔍 Buscar Dispositivos</button>
   <ul id="deviceList"></ul>
 
   <script>
     function scan() {
-      document.getElementById("deviceList").innerHTML = "<li>Buscando...</li>";
+      const list = document.getElementById("deviceList");
+      list.innerHTML = "<li>🔄 Buscando dispositivos...</li>";
       fetch('/scan')
         .then(res => res.json())
         .then(devices => {
-          const list = document.getElementById("deviceList");
           list.innerHTML = "";
+          if (devices.length === 0) {
+            list.innerHTML = "<li>No se encontraron dispositivos BLE.</li>";
+            return;
+          }
           devices.forEach(device => {
             const item = document.createElement("li");
             item.textContent = `${device.name} - ${device.address}`;
             const btn = document.createElement("button");
             btn.textContent = "Conectar";
             btn.onclick = () => connect(device.address);
+            item.appendChild(document.createElement("br"));
             item.appendChild(btn);
             list.appendChild(item);
           });
@@ -44,9 +76,9 @@
       .then(res => res.json())
       .then(data => {
         if (data.connected) {
-          alert("✅ ¡Conexión exitosa!");
+          alert("✅ ¡Conexión exitosa, hermosura!");
         } else {
-          alert("❌ Error: " + (data.error || "No se pudo conectar"));
+          alert("❌ Error: " + (data.error || "No se pudo conectar, que mal"));
         }
       });
     }

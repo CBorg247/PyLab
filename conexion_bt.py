@@ -6,13 +6,18 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('Bluet.html')
 
 @app.route('/scan', methods=['GET'])
 def scan_devices():
     async def scan():
-        devices = await BleakScanner.discover(timeout=5.0)
-        return [{"name": d.name or "Desconocido", "address": d.address} for d in devices]
+        try:
+            devices = await BleakScanner.discover(timeout=5.0)
+            return [{"name": d.name or "Desconocido", "address": d.address} for d in devices]
+        except Exception as e:
+            print("[ERROR SCAN]", str(e))
+            return []
+        
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -37,6 +42,7 @@ def connect_device():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     result = loop.run_until_complete(connect())
+    print(f"[DEBUG] Resultado conexión: {result}")
     return jsonify(result)
 
 if __name__ == '__main__':
