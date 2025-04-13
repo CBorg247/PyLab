@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Conexión BLE Web</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    button { margin: 10px; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 8px 0; }
+  </style>
+</head>
+<body>
+  <h2>Escáner Bluetooth BLE</h2>
+  <button onclick="scan()">🔍 Buscar Dispositivos</button>
+  <ul id="deviceList"></ul>
+
+  <script>
+    function scan() {
+      document.getElementById("deviceList").innerHTML = "<li>Buscando...</li>";
+      fetch('/scan')
+        .then(res => res.json())
+        .then(devices => {
+          const list = document.getElementById("deviceList");
+          list.innerHTML = "";
+          devices.forEach(device => {
+            const item = document.createElement("li");
+            item.textContent = `${device.name} - ${device.address}`;
+            const btn = document.createElement("button");
+            btn.textContent = "Conectar";
+            btn.onclick = () => connect(device.address);
+            item.appendChild(btn);
+            list.appendChild(item);
+          });
+        });
+    }
+
+    function connect(address) {
+      fetch('/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address: address })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.connected) {
+          alert("✅ ¡Conexión exitosa!");
+        } else {
+          alert("❌ Error: " + (data.error || "No se pudo conectar"));
+        }
+      });
+    }
+  </script>
+</body>
+</html>
