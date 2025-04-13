@@ -1,67 +1,43 @@
-import asyncio
-import tkinter as tk
-from tkinter import messagebox
+from flask import Flask, render_template, request, jsonify
 from bleak import BleakScanner, BleakClient
+import asyncio
 
-class BluetoothApp:
-    def __init__(self, master):
-        self.master = master
-        master.title("Conexión BLE con Bleak")
-        master.geometry("450x400")
+app = Flask(__name__)
 
-        self.devices = []
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-        self.search_button = tk.Button(master, text="Buscar dispositivos", command=self.buscar_dispositivos)
-        self.search_button.pack(pady=10)
+@app.route('/scan', methods=['GET'])
+def scan_devices():
+    async def scan():
+        devices = await BleakScanner.discover(timeout=5.0)
+        return [{"name": d.name or "Desconocido", "address": d.address} for d in devices]
 
-        self.device_listbox = tk.Listbox(master, width=60)
-        self.device_listbox.pack(pady=10)
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    result = loop.run_until_complete(scan())
+    return jsonify(result)
 
-        self.connect_button = tk.Button(master, text="Conectar", command=self.conectar)
-        self.connect_button.pack(pady=10)
+@app.route('/connect', methods=['POST'])
+def connect_device():
+    data = request.get_json()
+    address = data.get("address")
 
-        self.status_label = tk.Label(master, text="Estado: Esperando", fg="blue")
-        self.status_label.pack(pady=10)
+    async def connect():
+        client = BleakClient(address)
+        try:
+            await client.connect()
+            connected = client.is_connected
+            await client.disconnect()
+            return {"connected": connected}
+        except Exception as e:
+            return {"connected": False, "error": str(e)}
 
-        self.client = None
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    result = loop.run_until_complete(connect())
+    return jsonify(result)
 
-    def buscar_dispositivos(self):
-        self.device_listbox.delete(0, tk.END)
-        self.status_label.config(text="Buscando dispositivos BLE...")
-
-        async def scan():
-            self.devices = await BleakScanner.discover(timeout=5.0)
-            for i, d in enumerate(self.devices):
-                self.device_listbox.insert(tk.END, f"{d.name or 'Desconocido'} - {d.address}")
-            self.status_label.config(text="Dispositivos encontrados")
-
-        asyncio.run(scan())
-
-    def conectar(self):
-        seleccion = self.device_listbox.curselection()
-        if not seleccion:
-            messagebox.showwarning("Advertencia", "Seleccioná un dispositivo para conectar.")
-            return
-
-        dispositivo = self.devices[seleccion[0]]
-        address = dispositivo.address
-
-        async def connect_to_device():
-            try:
-                self.client = BleakClient(address)
-                await self.client.connect()
-                if self.client.is_connected:
-                    self.status_label.config(text=f"Conectado a {dispositivo.name}")
-                    messagebox.showinfo("Éxito", f"Conectado a {dispositivo.name or address}")
-                else:
-                    self.status_label.config(text="Fallo en la conexión")
-            except Exception as e:
-                self.status_label.config(text="Error en la conexión")
-                messagebox.showerror("Error", str(e))
-
-        asyncio.run(connect_to_device())
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = BluetoothApp(root)
-    root.mainloop()
+if __name__ == '__main__':
+    app.run(debug=True)
