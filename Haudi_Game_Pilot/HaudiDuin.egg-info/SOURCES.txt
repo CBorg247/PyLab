@@ -1,0 +1,5 @@
+setup.py
+HaudiDuin.egg-info/PKG-INFO
+HaudiDuin.egg-info/SOURCES.txt
+HaudiDuin.egg-info/dependency_links.txt
+HaudiDuin.egg-info/top_level.txt
