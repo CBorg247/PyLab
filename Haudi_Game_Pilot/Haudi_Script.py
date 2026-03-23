@@ -6,14 +6,14 @@ pygame.init()
 #crash_sound = pygame.mixer.Sound("")-En el proximo le pongo musica TODO
 #pygame.mixer.music.load("")TODO 
 
-display_width = 800
-display_height = 600
+DISPLAY_WIDTH = 800
+DISPLAY_HEIGTH = 600
 black = (0,0,0)
 white = (255,255,255)
 blue = (80, 160, 200)
 brown = (139,69,19)
 light_brown = (160,82,45)
-gameDisplay = pygame.display.set_mode((display_width, display_height))
+gameDisplay = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGTH))
 pygame.display.set_caption("HaudiDuin")
 clock = pygame.time.Clock()
 
@@ -70,7 +70,7 @@ def text_objects(text, font):
 def message_display(text):
     largeText =pygame.font.SysFont(None, 72)
     TextSurf, TextRect = text_objects(text, largeText)
-    TextRect.center = ((display_width/2),(display_height/2))
+    TextRect.center = ((DISPLAY_WIDTH/2),(DISPLAY_HEIGTH/2))
     gameDisplay.blit(TextSurf, TextRect)
 
     pygame.display.update()
@@ -89,7 +89,7 @@ def game_over():
         gameDisplay.fill(black) #negro si pierdo
         largeText =pygame.font.SysFont(None, 72)
         TextSurf, TextRect = text_objects("Game Over", largeText)
-        TextRect.center = ((display_width/2),(display_height/2))
+        TextRect.center = ((DISPLAY_WIDTH/2),(DISPLAY_HEIGTH/2))
         gameDisplay.blit(TextSurf, TextRect)
 
         buttons("Reintenta",150,450, 100, 50,brown,light_brown, game_loop)
@@ -157,14 +157,14 @@ def paused():
 def game_loop ():
     global pause
     #pygame.mixer.music.play(-1)
-    x = (display_width * 0.1)
-    y = (display_height * 0.5)
+    x = (DISPLAY_WIDTH * 0.1)
+    y = (DISPLAY_HEIGTH * 0.5)
 
     y_change = 0
     x_change = 0
 
-    ranas_starty = random.randrange(0, display_height)
-    ranas_startx = display_width + 100
+    ranas_starty = random.randrange(0, DISPLAY_HEIGTH)
+    ranas_startx = DISPLAY_WIDTH + 100
     ranas_speed = 3
     ranas_width = 100
     ranas_height = 100
@@ -172,7 +172,7 @@ def game_loop ():
     score = 0
 
     def respawn_ranas():
-         return display_width + 200, random.randrange(0, display_height - 100)
+         return DISPLAY_WIDTH + 200, random.randrange(0, DISPLAY_HEIGTH - 100)
 
     #Game loop
     gameExit = False
@@ -236,14 +236,14 @@ def game_loop ():
                 bullets.remove(bullet)
                 ranas_startx, ranas_starty = respawn_ranas()
 
-            if bullet[0] > display_width:
+            if bullet[0] > DISPLAY_WIDTH:
                 bullets.remove(bullet)
         #puntaje
         ranas_capturadas(score)
         if bullets_fired >= max_bullets and score < 20 and len(bullets) == 0:
             game_over()
         
-        if x < 0 or x > display_width-128 or y < 0 or y > display_height-128:
+        if x < 0 or x > DISPLAY_WIDTH-128 or y < 0 or y > DISPLAY_HEIGTH-128:
             game_over()
             gameExit = True
         
